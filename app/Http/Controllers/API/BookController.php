@@ -13,15 +13,19 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        try {
+            $book = Book::all();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'success',
+                'data' => $book,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -34,11 +38,7 @@ class BookController extends Controller
                 'name' => $request->name,
                 'author' => $request->author
             ]);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'book crated successfully',
-                'data' => $book,
-            ], 201);
+            return $this->sendResponse('success', 'book created successfully', $book, 201);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -50,32 +50,51 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
-    {
-        //
+        try {
+            $book = Book::findOrFail($id);
+            return $this->sendResponse('success', 'get 1 book successfully', $book, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $book = Book::findOrFail($id)->update([
+                'name' => $request->name,
+                'author' => $request->author
+            ]);
+            return $this->sendResponse('success', 'book updated successfully', $book, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Book $book)
+    public function destroy($id)
     {
-        //
+        try {
+            $book = Book::findOrFail($id)->delete();
+            return $this->sendResponse('success', 'book deleted successfully', $book, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
