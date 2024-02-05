@@ -16,8 +16,8 @@ class BookController extends Controller
         try {
             $book = Book::all();
             return response()->json([
-                'status' => 'error',
-                'message' => 'success',
+                'status' => 'success',
+                'message' => 'Berhasil mengambil data',
                 'data' => $book,
             ], 200);
         } catch (\Exception $e) {
